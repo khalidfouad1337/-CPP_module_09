@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: khalid <khalid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kfouad <kfouad@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/18 19:20:32 by khalid            #+#    #+#             */
-/*   Updated: 2025/04/18 19:20:33 by khalid           ###   ########.fr       */
+/*   Created: 2025/04/18 19:20:32 by kfouad            #+#    #+#             */
+/*   Updated: 2025/04/19 22:38:55 by kfouad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,27 @@
 
 #include <vector>
 #include <deque>
-#include <string>
+#include <iostream>
+#include <iterator>
+#include <algorithm>
+#include <utility>   // for std::swap
+#include <iomanip>   // for std::setprecision
+#include <ctime>     // for clock time
 
-class PmergeMe {
-public:
-    PmergeMe(); // constructor
-    ~PmergeMe(); // destructor
+class PmergeMe
+{
+    private:
 
-    void fillContainers(char **argv); // تعمّر الأرقام
-    void sortAndShow(); // ترتّب وتعرض النتائج
+    public:
+        PmergeMe();
+        PmergeMe(const PmergeMe &src);
+        PmergeMe &operator=(const PmergeMe &rhs);
 
-private:
-    std::vector<int> _vec;
-    std::deque<int> _deq;
+        std::vector<unsigned int> mergeSortVector(std::vector<unsigned int> &input);
+        std::deque<unsigned int> mergeSortDeque(std::deque<unsigned int> &input);
 
-    void mergeInsertSortVector(std::vector<int>& vec);
-    void mergeInsertSortDeque(std::deque<int>& deq);
+        ~PmergeMe();
 };
 
-#endif
+#endif // PMERGEME_HPP
+

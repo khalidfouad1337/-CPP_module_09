@@ -3,134 +3,115 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: khalid <khalid@student.42.fr>              +#+  +:+       +#+        */
+/*   By: kfouad <kfouad@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/18 19:20:35 by khalid            #+#    #+#             */
-/*   Updated: 2025/04/18 19:43:30 by khalid           ###   ########.fr       */
+/*   Created: 2025/04/18 19:20:35 by kfouad            #+#    #+#             */
+/*   Updated: 2025/04/19 22:38:14 by kfouad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "PmergeMe.hpp"
-#include <iostream>
-#include <cstdlib>
-#include <ctime> // باش نحسبو الوقت
-#include <iomanip> 
 
 PmergeMe::PmergeMe() {}
 
 PmergeMe::~PmergeMe() {}
 
-void PmergeMe::fillContainers(char **argv) {
-    for (int i = 1; argv[i]; i++) {
-        std::string str = argv[i];
-        
-        // نحاول نحولو لـ int
-        int num = std::atoi(str.c_str());
-        
-        // تحقق واش الرقم صالح
-        if (num <= 0) {
-            std::cerr << "Error: invalid number \"" << str << "\"" << std::endl;
-            exit(1);
-        }
-
-        _vec.push_back(num);
-        _deq.push_back(num);
-    }
+PmergeMe::PmergeMe(const PmergeMe &src) {
+    *this = src;
 }
 
-
-void PmergeMe::sortAndShow() {
-    // Before
-    std::cout << "Before: ";
-    for (size_t i = 0; i < _vec.size(); ++i) {
-        std::cout << _vec[i] << " ";
+PmergeMe &PmergeMe::operator=(const PmergeMe &rhs) {
+    if (this != &rhs) {
+        *this = rhs;
     }
-    std::cout << std::endl;
-
-    // --- Sort vector ---
-    clock_t startVec = clock();
-    mergeInsertSortVector(_vec);
-    clock_t endVec = clock();
-
-    // --- Sort deque ---
-    clock_t startDeq = clock();
-    mergeInsertSortDeque(_deq);
-    clock_t endDeq = clock();
-
-    // After
-    std::cout << "After: ";
-    for (size_t i = 0; i < _vec.size(); ++i) {
-        std::cout << _vec[i] << " ";
-    }
-    std::cout << std::endl;
-
-    // Time
-    double timeVec = double(endVec - startVec) / CLOCKS_PER_SEC * 1000000;
-    double timeDeq = double(endDeq - startDeq) / CLOCKS_PER_SEC * 1000000;
-
-    std::cout << "Time to process a range of " << _vec.size()
-              << " elements with std::vector : " << std::fixed << std::setprecision(5)
-              << timeVec << " us" << std::endl;
-
-    std::cout << "Time to process a range of " << _deq.size()
-              << " elements with std::deque : " << std::fixed << std::setprecision(5)
-              << timeDeq << " us" << std::endl;
+    return *this;
 }
 
-void PmergeMe::mergeInsertSortVector(std::vector<int>& vec) {
-    if (vec.size() <= 1)
-        return;
+std::vector<unsigned int> PmergeMe::mergeSortVector(std::vector<unsigned int> &input) {
+    unsigned int len = input.size();
 
-    size_t mid = vec.size() / 2;
-
-    std::vector<int> left(vec.begin(), vec.begin() + mid);
-    std::vector<int> right(vec.begin() + mid, vec.end());
-
-    mergeInsertSortVector(left);
-    mergeInsertSortVector(right);
-
-    vec.clear();
-
-    size_t i = 0, j = 0;
-    while (i < left.size() && j < right.size()) {
-        if (left[i] < right[j])
-            vec.push_back(left[i++]);
-        else
-            vec.push_back(right[j++]);
+    if (len < 3) {
+        if (len == 2 && input[0] > input[1])
+            std::swap(input[0], input[1]);
+        return input;
     }
 
-    while (i < left.size())
-        vec.push_back(left[i++]);
+    std::vector<std::pair<unsigned int, unsigned int> > groupedPairs;
+    std::vector<unsigned int> extraElements;
 
-    while (j < right.size())
-        vec.push_back(right[j++]);
-}
-
-void PmergeMe::mergeInsertSortDeque(std::deque<int>& deq) {
-    if (deq.size() <= 1)
-        return;
-
-    size_t mid = deq.size() / 2;
-
-    std::deque<int> left(deq.begin(), deq.begin() + mid);
-    std::deque<int> right(deq.begin() + mid, deq.end());
-
-    mergeInsertSortDeque(left);
-    mergeInsertSortDeque(right);
-
-    deq.clear();
-
-    size_t i = 0, j = 0;
-    while (i < left.size() && j < right.size()) {
-        if (left[i] < right[j])
-            deq.push_back(left[i++]);
-        else
-            deq.push_back(right[j++]);
+    for (unsigned int i = 0; i + 1 < len; i += 2) {
+        groupedPairs.push_back(std::make_pair(input[i], input[i + 1]));
     }
 
-    while (i < left.size())
-        deq.push_back(left[i++]);
+    if (len % 2 == 1)
+        extraElements.push_back(input.back());
 
-    while (j < right.size())
-        deq.push_back(right[j++]);
+    for (size_t i = 0; i < groupedPairs.size(); ++i) {
+        if (groupedPairs[i].first > groupedPairs[i].second)
+            std::swap(groupedPairs[i].first, groupedPairs[i].second);
+    }
+
+    std::vector<unsigned int> mainChain;
+    mainChain.push_back(groupedPairs[0].first);
+    for (size_t i = 0; i < groupedPairs.size(); ++i) {
+        mainChain.push_back(groupedPairs[i].second);
+    }
+
+    mainChain = mergeSortVector(mainChain);
+
+    for (size_t i = 1; i < groupedPairs.size(); ++i) {
+        extraElements.push_back(groupedPairs[i].first);
+    }
+
+    for (size_t i = 0; i < extraElements.size(); ++i) {
+        std::vector<unsigned int>::iterator pos = std::lower_bound(mainChain.begin(), mainChain.end(), extraElements[i]);
+        mainChain.insert(pos, extraElements[i]);
+    }
+
+    return mainChain;
 }
+
+std::deque<unsigned int> PmergeMe::mergeSortDeque(std::deque<unsigned int> &input) {
+    unsigned int len = input.size();
+
+    if (len < 3) {
+        if (len == 2 && input[0] > input[1])
+            std::swap(input[0], input[1]);
+        return input;
+    }
+
+    std::deque<std::pair<unsigned int, unsigned int> > groupedPairs;
+    std::deque<unsigned int> extraElements;
+
+    for (unsigned int i = 0; i + 1 < len; i += 2) {
+        groupedPairs.push_back(std::make_pair(input[i], input[i + 1]));
+    }
+
+    if (len % 2 == 1)
+        extraElements.push_back(input.back());
+
+    for (size_t i = 0; i < groupedPairs.size(); ++i) {
+        if (groupedPairs[i].first > groupedPairs[i].second)
+            std::swap(groupedPairs[i].first, groupedPairs[i].second);
+    }
+
+    std::deque<unsigned int> mainChain;
+    mainChain.push_back(groupedPairs[0].first);
+    for (size_t i = 0; i < groupedPairs.size(); ++i) {
+        mainChain.push_back(groupedPairs[i].second);
+    }
+
+    mainChain = mergeSortDeque(mainChain);
+
+    for (size_t i = 1; i < groupedPairs.size(); ++i) {
+        extraElements.push_back(groupedPairs[i].first);
+    }
+
+    for (size_t i = 0; i < extraElements.size(); ++i) {
+        std::deque<unsigned int>::iterator pos = std::lower_bound(mainChain.begin(), mainChain.end(), extraElements[i]);
+        mainChain.insert(pos, extraElements[i]);
+    }
+
+    return mainChain;
+}
+
