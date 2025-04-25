@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kfouad <kfouad@student.1337.ma>            +#+  +:+       +#+        */
+/*   By: khalid <khalid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 19:20:32 by kfouad            #+#    #+#             */
-/*   Updated: 2025/04/19 22:38:55 by kfouad           ###   ########.fr       */
+/*   Updated: 2025/04/25 17:13:48 by khalid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 #include <iostream>
 #include <iterator>
 #include <algorithm>
-#include <utility>   // for std::swap
-#include <iomanip>   // for std::setprecision
-#include <ctime>     // for clock time
+#include <utility>
+#include <iomanip>
+#include <ctime>  
 
 class PmergeMe
 {
@@ -37,5 +37,5 @@ class PmergeMe
         ~PmergeMe();
 };
 
-#endif // PMERGEME_HPP
+#endif
 

@@ -1,29 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   BitcoinExchange.hpp                                :+:      :+:    :+:   */
+/*   RPN.hpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: khalid <khalid@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 15:23:35 by kfouad            #+#    #+#             */
-/*   Updated: 2025/04/25 17:11:43 by khalid           ###   ########.fr       */
+/*   Created: 2025/04/18 18:58:21 by khalid            #+#    #+#             */
+/*   Updated: 2025/04/25 17:10:36 by khalid           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BITCOINEXCHANGE_HPP
-#define BITCOINEXCHANGE_HPP
+#ifndef RPN_HPP
+#define RPN_HPP
 
-#include <iostream>
-#include <map>
+#include <stack>
 #include <string>
 
-class BitcoinExchange {
+class RPN {
 public:
-    BitcoinExchange(const std::string& dbFile);
-    float getRate(const std::string& date) const;
+    RPN();
+    ~RPN();
+
+    int calculate(const std::string& expression);
+
 private:
-    std::map<std::string, float> _exchangeRates;
-    void loadDatabase(const std::string& dbFile);
+    std::stack<int> _stack;
 };
 
 #endif
