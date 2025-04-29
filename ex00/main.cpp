@@ -6,18 +6,17 @@
 /*   By: kfouad <kfouad@student.1337.ma>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 16:30:18 by kfouad            #+#    #+#             */
-/*   Updated: 2025/04/15 16:30:20 by kfouad           ###   ########.fr       */
+/*   Updated: 2025/04/29 21:03:12 by kfouad           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "BitcoinExchange.hpp"
 #include <fstream>
 #include <sstream>
-#include <cstdlib> // for atof
-#include <iomanip> // for setprecision
+#include <cstdlib>
+#include <iomanip>
 
 int main(int argc, char** argv) {
-    // مرحلة 1 ✅
     if (argc != 2) {
         std::cerr << "Error: could not open file." << std::endl;
         return 1;
@@ -29,10 +28,10 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    BitcoinExchange btc("data.csv"); // database file
+    BitcoinExchange btc("data.csv");
 
     std::string line;
-    std::getline(inputFile, line); // تجاهل السطر الأول
+    std::getline(inputFile, line);
 
     while (std::getline(inputFile, line)) {
         std::stringstream ss(line);
@@ -46,7 +45,6 @@ int main(int argc, char** argv) {
         date = line.substr(0, line.find(" | "));
         valueStr = line.substr(line.find(" | ") + 3);
 
-        // تحقق من القيمة
         double value = atof(valueStr.c_str());
         if (value < 0) {
             std::cerr << "Error: not a positive number." << std::endl;
@@ -56,7 +54,6 @@ int main(int argc, char** argv) {
             continue;
         }
 
-        // خرج النتيجة
         float rate = btc.getRate(date);
         std::cout << date << " => " << valueStr << " = " 
                   << std::fixed << std::setprecision(2) << (value * rate) << std::endl;
